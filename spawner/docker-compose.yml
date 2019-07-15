@@ -1,0 +1,22 @@
+version: "2.1"
+
+volumes:
+
+  home:
+    driver: local
+
+services:
+
+  kuberdp-spawner:
+    container_name: kuberdp-spawner
+    hostname: kuberdp-spawner
+    image: ${SPAWNER_IMAGE}
+    build: .
+    privileged: true
+    ports:
+    - "3389:3389"
+    environment:
+      PORT: 3389
+      KUBE_CONFIG_BASE64: ${KUBE_CONFIG_BASE64}
+#      DOCKER_CONFIG_JSON: ${DOCKER_CONFIG_JSON}
+

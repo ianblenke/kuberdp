@@ -1,0 +1,23 @@
+version: "2.1"
+
+volumes:
+
+  home:
+    driver: local
+
+services:
+
+  kuberdp-desktop:
+    container_name: kuberdp-desktop
+    hostname: kuberdp-desktop
+    image: ${DESKTOP_IMAGE}
+    privileged: true
+    build: .
+    ports:
+    - "3389:3389"
+    volumes:
+    - "home:/home"
+    environment:
+      RDP_USERNAME: rdp
+      RDP_PASSWORD: rdp
+
