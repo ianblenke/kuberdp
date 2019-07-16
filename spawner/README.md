@@ -2,12 +2,12 @@
 
 The premise of this project is to run:
 1. An xinetd container pod in kubernetes (kuberdp-spawner)
-2. This will spawn an Xrdp kubernetes pod container (kuberdp-desktop)
+2. This will spawn an Xrdp kubernetes pod container (kuberdp-devdesktop)
 
 For each TCP connection through xinetd, the spawner container runs a
 shell script that will use kubectl to:
 
-1. Start a kuberdp-desktop container 
+1. Start a kuberdp-devdesktop container 
 2. netcat forward the TCP stream through to the container
 3. Destroy the container to clean up after
 

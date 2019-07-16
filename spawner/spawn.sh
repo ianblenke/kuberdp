@@ -4,7 +4,7 @@ set -eo pipefail
 export $(cat /.env)
 
 PORT=${PORT:-3389}
-DESKTOP_IMAGE=${DESKTOP_IMAGE:-ianblenke/kuberdp-desktop}
+DESKTOP_IMAGE=${DESKTOP_IMAGE:-ianblenke/kuberdp-devdesktop}
 RDP_USERNAME=${RDP_USERNAME:-rdp}
 RDP_PASSWORD=${RDP_PASSWORD:-rdp}
 

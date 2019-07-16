@@ -1,4 +1,4 @@
-# kuberdp-desktop
+# kuberdp-devdesktop
 
 The premise of this docker image is to expose an RDP TCP socket on 3389 to
 provide a Xrdp desktop with Microsoft Visual Studio Code and Docker-in-Docker

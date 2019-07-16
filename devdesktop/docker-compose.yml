@@ -7,9 +7,9 @@ volumes:
 
 services:
 
-  kuberdp-desktop:
-    container_name: kuberdp-desktop
-    hostname: kuberdp-desktop
+  kuberdp-devdesktop:
+    container_name: kuberdp-devdesktop
+    hostname: kuberdp-devdesktop
     image: ${DESKTOP_IMAGE}
     privileged: true
     build: .
