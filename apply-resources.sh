@@ -6,7 +6,6 @@ which jq && which kubectl
 
 # Prepare sane defaults
 SPAWNER_IMAGE=${SPAWNER_IMAGE:-ianblenke/kuberdp-spawner}
-KUBE_CONFIG_BASE64=$(kubectl config view --flatten --minify=true | openssl base64 -A)
 
 kubectl get secret kuberdp-credentials || \
 kubectl create secret generic kuberdp-credentials \
@@ -16,6 +15,25 @@ kubectl create secret generic kuberdp-credentials \
 set -eo pipefail
 
 cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kuberdp
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kuberdp
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kuberdp
+    namespace: default
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,13 +50,14 @@ spec:
       labels:
         app: spawner
     spec:
+      automountServiceAccountToken: true
+      serviceAccount: spawner
+      serviceAccountName: spawner
       containers:
       - name: spawner
         ports:
         - containerPort: 3389
         env:
-        - name: KUBE_CONFIG_BASE64
-          value: ${KUBE_CONFIG_BASE64}
         image: ${SPAWNER_IMAGE}
         imagePullPolicy: Always
       imagePullSecrets:

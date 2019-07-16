@@ -2,14 +2,6 @@
 set -eo pipefail
 env > /.env
 
-if [ -n "$KUBE_CONFIG_BASE64" ]; then
-  mkdir -p ~/.kube
-  echo $KUBE_CONFIG_BASE64 | base64 -d > ~/.kube/config
-else
-  echo "Missing kubernetes credentials, this script cannot continue"
-  exit 1
-fi
-
 mkdir -p etc/xinetd.d
 
 cat <<EOF > /etc/xinetd.d/rdp
