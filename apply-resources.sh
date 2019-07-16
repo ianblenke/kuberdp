@@ -7,24 +7,26 @@ which jq && which kubectl
 # Prepare sane defaults
 SPAWNER_IMAGE=${SPAWNER_IMAGE:-ianblenke/kuberdp-spawner}
 
-kubectl get secret kuberdp-credentials || \
+export KUBE_NAMESPACE=${KUBE_NAMESPACE:-default}
+
+kubectl get secret kuberdp-credentials --namespace ${KUBE_NAMESPACE} || \
 kubectl create secret generic kuberdp-credentials \
+    --namespace ${KUBE_NAMESPACE} \
     --from-file=.dockerconfigjson=$HOME/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson
 
-set -eo pipefail
-
-cat <<EOF | kubectl apply -f -
+cat <<EOF | kubectl apply --namespace ${KUBE_NAMESPACE} -f -
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: kuberdp
-  namespace: default
+  namespace: ${KUBE_NAMESPACE}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: kuberdp
+  namespace: ${KUBE_NAMESPACE}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -38,6 +40,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spawner
+  namespace: ${KUBE_NAMESPACE}
   labels:
     app: spawner
 spec:
@@ -51,13 +54,15 @@ spec:
         app: spawner
     spec:
       automountServiceAccountToken: true
-      serviceAccount: spawner
-      serviceAccountName: spawner
+      serviceAccount: kuberdp
+      serviceAccountName: kuberdp
       containers:
       - name: spawner
         ports:
         - containerPort: 3389
         env:
+        - name: KUBE_NAMESPACE
+          value: ${KUBE_NAMESPACE}
         image: ${SPAWNER_IMAGE}
         imagePullPolicy: Always
       imagePullSecrets:
@@ -67,6 +72,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: spawner-rdp
+  namespace: ${KUBE_NAMESPACE}
 spec:
   type: NodePort
   selector:
@@ -81,6 +87,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: spawner-echo
+  namespace: ${KUBE_NAMESPACE}
 spec:
   type: NodePort
   selector:
