@@ -17,5 +17,4 @@ services:
     - "3389:3389"
     environment:
       PORT: 3389
-      KUBE_CONFIG_BASE64: ${KUBE_CONFIG_BASE64}
 
