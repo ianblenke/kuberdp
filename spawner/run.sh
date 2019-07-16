@@ -10,11 +10,6 @@ else
   exit 1
 fi
 
-if [ -n "$DOCKER_CONFIG_JSON" ]; then
-  mkdir -p ~/.docker
-  echo $DOCKER_CONFIG_JSON > ~/.docker/config
-fi
-
 mkdir -p etc/xinetd.d
 
 cat <<EOF > /etc/xinetd.d/rdp

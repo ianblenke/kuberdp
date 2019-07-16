@@ -5,6 +5,8 @@ export $(cat /.env)
 
 PORT=${PORT:-3389}
 DESKTOP_IMAGE=${DESKTOP_IMAGE:-ianblenke/kuberdp-desktop}
+RDP_USERNAME=${RDP_USERNAME:-rdp}
+RDP_PASSWORD=${RDP_PASSWORD:-rdp}
 
 # Uniquely name each deployment/service
 PID=$$
@@ -85,7 +87,7 @@ spec:
       labels:
         app: $NAME
     spec:
-# Allow the use of a private container registry for images
+      ## Allow the use of a private container registry for images
       imagePullSecrets:
       - name: kuberdp-credentials
       containers:
@@ -95,6 +97,11 @@ spec:
         - containerPort: $PORT
         securityContext:
           privileged: true
+        env:
+        - name: RDP_USERNAME
+          value: ${RDP_USERNAME}
+        - name: RDP_PASSWORD
+          value: ${RDP_PASSWORD}
 ## TODO: FIXME: This currently results in a black screen on subsequent connections.
 #        volumeMounts:
 #        - mountPath: "/home"

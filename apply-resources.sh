@@ -1,25 +1,19 @@
 #!/bin/bash
-set -exo pipefail
+set -eo pipefail
 
 # Make sure commands that this script needs are available
 which jq && which kubectl
 
 # Prepare sane defaults
-SPAWNER_IMAGE=${SPAWNER_IMAGE:-ianblenke/kuberdp-spawn}
-DOCKER_CONFIG_JSON_BASE64=$(jq -c . ~/.docker/config.json | openssl base64 -A)
+SPAWNER_IMAGE=${SPAWNER_IMAGE:-ianblenke/kuberdp-spawner}
 KUBE_CONFIG_BASE64=$(kubectl config view --flatten --minify=true | openssl base64 -A)
 
-set -eo pipefail
+kubectl get secret kuberdp-credentials || \
+kubectl create secret generic kuberdp-credentials \
+    --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson
 
-kubectl apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: kuberdp-credentials
-data:
-  .dockerconfigjson: "${DOCKER_CONFIG_JSON_BASE64}"
-type: kubernetes.io/dockerconfigjson
-EOF
+set -eo pipefail
 
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
@@ -39,20 +33,13 @@ spec:
         app: spawner
     spec:
       containers:
-      - env:
-        - name: KUBE_CONFIG_BASE64
-          value: ${KUBE_CONFIG_BASE64}
-        - name: KUBE_NAMESPACE
-          value: ${KUBE_NAMESPACE}
-        - name: DOCKER_CONFIG_JSON
-          valueFrom:
-            secretKeyRef:
-              name: kuberdp-credentials
-              key: .dockerconfigjson
-        name: spawner
-        image: ${SPAWNER_IMAGE}
+      - name: spawner
         ports:
         - containerPort: 3389
+        env:
+        - name: KUBE_CONFIG_BASE64
+          value: ${KUBE_CONFIG_BASE64}
+        image: ${SPAWNER_IMAGE}
         imagePullPolicy: Always
       imagePullSecrets:
       - name: kuberdp-credentials

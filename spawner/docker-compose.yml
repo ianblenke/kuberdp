@@ -18,5 +18,4 @@ services:
     environment:
       PORT: 3389
       KUBE_CONFIG_BASE64: ${KUBE_CONFIG_BASE64}
-#      DOCKER_CONFIG_JSON: ${DOCKER_CONFIG_JSON}
 
