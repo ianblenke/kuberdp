@@ -1,0 +1,3 @@
+Package: xorgxrdp
+Pin: release o=LP-PPA-martinx-xrdp-next
+Pin-Priority: 700
