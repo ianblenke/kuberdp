@@ -1,0 +1,23 @@
+version: "2.1"
+
+volumes:
+
+  home:
+    driver: local
+
+services:
+
+  kuberdp-tinydesktop:
+    container_name: kuberdp-tinydesktop
+    hostname: kuberdp-tinydesktop
+    image: ${DESKTOP_IMAGE}
+    privileged: true
+    build: .
+    ports:
+    - "3389:3389"
+    volumes:
+    - "home:/home"
+    environment:
+      RDP_USERNAME: tiny
+      RDP_PASSWORD: tiny
+
