@@ -7,6 +7,8 @@ which jq && which kubectl
 # Prepare sane defaults
 SPAWNER_IMAGE=${SPAWNER_IMAGE:-ianblenke/kuberdp-spawner}
 DESKTOP_IMAGE=${DESKTOP_IMAGE:-ianblenke/kuberdp-kalidesktop}
+RDP_USERNAME=${RDP_USERNAME:-rdp}
+RDP_PASSWORD=${RDP_PASSWORD:-rdp}
 
 export KUBE_NAMESPACE=${KUBE_NAMESPACE:-default}
 
@@ -66,6 +68,10 @@ spec:
         env:
         - name: KUBE_NAMESPACE
           value: ${KUBE_NAMESPACE}
+        - name: RDP_USERNAME
+          value: ${RDP_USERNAME}
+        - name: RDP_PASSWORD
+          value: ${RDP_PASSWORD}
         image: ${SPAWNER_IMAGE}
         imagePullPolicy: Always
       imagePullSecrets:

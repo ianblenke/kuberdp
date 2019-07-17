@@ -17,4 +17,7 @@ services:
     - "3389:3389"
     environment:
       PORT: 3389
+    environment:
+      RDP_USERNAME: ${RDP_USERNAME}
+      RDP_PASSWORD: ${RDP_PASSWORD}
 

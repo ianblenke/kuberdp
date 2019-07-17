@@ -18,6 +18,6 @@ services:
     volumes:
     - "home:/home"
     environment:
-      RDP_USERNAME: rdp
-      RDP_PASSWORD: rdp
+      RDP_USERNAME: ${RDP_USERNAME}
+      RDP_PASSWORD: ${RDP_PASSWORD}
 
