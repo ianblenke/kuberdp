@@ -6,6 +6,7 @@ which jq && which kubectl
 
 # Prepare sane defaults
 SPAWNER_IMAGE=${SPAWNER_IMAGE:-ianblenke/kuberdp-spawner}
+DESKTOP_IMAGE=${DESKTOP_IMAGE:-ianblenke/kuberdp-kalidesktop}
 
 export KUBE_NAMESPACE=${KUBE_NAMESPACE:-default}
 
@@ -14,6 +15,8 @@ kubectl create secret generic kuberdp-credentials \
     --namespace ${KUBE_NAMESPACE} \
     --from-file=.dockerconfigjson=$HOME/.docker/config.json \
     --type=kubernetes.io/dockerconfigjson
+
+kubectl delete -n default deployment.apps/spawner || true
 
 cat <<EOF | kubectl apply --namespace ${KUBE_NAMESPACE} -f -
 apiVersion: v1
