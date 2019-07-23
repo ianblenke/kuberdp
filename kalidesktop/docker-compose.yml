@@ -12,6 +12,7 @@ services:
     hostname: kuberdp-kalidesktop
     image: ${DESKTOP_IMAGE}
     privileged: true
+    #restart: always
     build: .
     ports:
     - "3389:3389"
