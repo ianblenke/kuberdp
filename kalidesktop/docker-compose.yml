@@ -1,9 +1,9 @@
 version: "2.1"
 
-volumes:
-
-  home:
-    driver: local
+#volumes:
+#
+#  home:
+#    driver: local
 
 services:
 
@@ -17,7 +17,8 @@ services:
     ports:
     - "3389:3389"
     volumes:
-    - "home:/home"
+    - ".:/home"
+#    - "home:/home"
     environment:
       RDP_USERNAME: ${RDP_USERNAME}
       RDP_PASSWORD: ${RDP_PASSWORD}
